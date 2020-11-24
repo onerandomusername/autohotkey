@@ -6,7 +6,11 @@ SetWorkingDir %A_MyDocuments%  ; Ensures a consistent starting directory.
 #SingleInstance, Force
 #Persistent
 #Include <VMR>
+Menu, Tray, Tip , Essential Shortcuts (D)
+
 SetCapsLockState, AlwaysOff
+
+OnExit("ExitFunc", -1)
 
 lastWin := WinExist("A")
 global voicemeeterProcess := 0
@@ -140,4 +144,6 @@ else
 }
 return
 
-
+ExitFunc() {
+SetCapsLockState, Off
+}
