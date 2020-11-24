@@ -7,10 +7,31 @@ SetWorkingDir %A_MyDocuments%  ; Ensures a consistent starting directory.
 #Persistent
 #Include <VMR>
 SetCapsLockState, AlwaysOff
-RunWait, C:\Program Files (x86)\VB\Voicemeeter\Voicemeeterpro.exe
 
+lastWin := WinExist("A")
+global voicemeeterProcess := 0
+If (!VoicemeeterExist()) {
+	RunWait, C:\Program Files (x86)\VB\Voicemeeter\Voicemeeterpro.exe
+}
 voicemeeter := new VMR()
 voicemeeter.login()
+
+If (!voicemeeterProcess) {
+	switch (voicemeeter.getType())
+	{
+		Case 1:
+		voicemeeterProcess := "voicemeeter.exe"
+		Case 2:
+		voicemeeterProcess := "voicemeeterpro.exe"
+		Case 3:
+		voicemeeterProcess := "voicemeeter8x64.exe" 
+		Default:
+		Throw, Exception("Invalid Voicemeeter", -1)
+	}
+}
+
+
+
 voicemeeter.command.show(1)
 lastWin := WinExist("A")
 WinExist("VoiceMeeter")
@@ -44,6 +65,14 @@ VoicemeeterExist(){
 		return true
 	return false
 }
+
+
+#If WinActive("ahk_exe explorer.exe")
+*Mbutton::
+Send, {Rbutton}{Down}{Right}{Up}{Enter}
+return
+
+
 
 #If VoicemeeterExist()
 
@@ -110,3 +139,5 @@ else
 		bus.mute := busMutes[i]
 }
 return
+
+
